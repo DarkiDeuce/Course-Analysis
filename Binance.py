@@ -5,6 +5,7 @@ import aioschedule
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
@@ -79,7 +80,12 @@ async def transaction_amount(message: types.Message, state: FSMContext):
 
 async def analysis():
     url = 'https://p2p.binance.com/ru'
-    s = Service('C:/Users/User/Desktop/All/Activity/Python/Задачи/chromedriver.exe')
+    s = Service('chromedriver.exe')
+    options = Options()
+    options.add_argument("user-agent=Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--headless")
+    options.add_argument('--no-sandbox')
 
     try:
         con = sqlite3.connect('data_buy.db')
@@ -92,30 +98,39 @@ async def analysis():
         cur.close()
         con.close()
 
-    try:
-        driver = webdriver.Chrome(service=s)
-        driver.get(url=url)
-        driver.set_window_size(1920, 1080)
-        time.sleep(2)
+    driver = webdriver.Chrome(service=s, options=options)
+    driver.get(url=url)
+    time.sleep(2)
 
+    try:
+        print('Клик по согласию с cookie')
+        cookie = driver.find_element(By.XPATH, '//button[text()="Согласиться с использованием всех файлов cookie"]').click()
+        time.sleep(2)
+        
         if status_last_transaction == 0:
+            print('Клик по Продать')
             sell = driver.find_element(By.XPATH, '//div[text()="Продать"]').click()
             time.sleep(2)
-
+            
+        print('Клик по BTC')
         BTC = driver.find_element(By.XPATH, '//h2[text()="BTC"]').click()
         time.sleep(2)
 
+        print('Клик по способы оплаты')
         payment_method = driver.find_element(By.XPATH, '//*[@id="C2Cpaymentfilter_searchbox_payment"]').click()
         time.sleep(2)
 
+        print('Клик по Тинькофф')
         tinkoff = driver.find_element(By.XPATH, '//div[text()="Тинькофф"]').click()
         time.sleep(2)
 
+        print('Вводим сумму транзакции')
         input_sum = driver.find_element(By.XPATH, '//*[@id="C2Csearchamount_searchbox_amount"]')
         input_sum.clear()
         input_sum.send_keys('10000')
         time.sleep(2)
 
+        print('Клик по поиску')
         search = driver.find_element(By.XPATH, '//button[text()="Поиск"]').click()
         time.sleep(2)
 
