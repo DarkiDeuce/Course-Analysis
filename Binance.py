@@ -103,34 +103,27 @@ async def analysis():
     time.sleep(2)
 
     try:
-        print('Клик по согласию с cookie')
         cookie = driver.find_element(By.XPATH, '//button[text()="Согласиться с использованием всех файлов cookie"]').click()
         time.sleep(2)
         
         if status_last_transaction == 0:
-            print('Клик по Продать')
             sell = driver.find_element(By.XPATH, '//div[text()="Продать"]').click()
             time.sleep(2)
             
-        print('Клик по BTC')
         BTC = driver.find_element(By.XPATH, '//h2[text()="BTC"]').click()
         time.sleep(2)
 
-        print('Клик по способы оплаты')
         payment_method = driver.find_element(By.XPATH, '//*[@id="C2Cpaymentfilter_searchbox_payment"]').click()
         time.sleep(2)
 
-        print('Клик по Тинькофф')
         tinkoff = driver.find_element(By.XPATH, '//div[text()="Тинькофф"]').click()
         time.sleep(2)
 
-        print('Вводим сумму транзакции')
         input_sum = driver.find_element(By.XPATH, '//*[@id="C2Csearchamount_searchbox_amount"]')
         input_sum.clear()
         input_sum.send_keys('10000')
         time.sleep(2)
 
-        print('Клик по поиску')
         search = driver.find_element(By.XPATH, '//button[text()="Поиск"]').click()
         time.sleep(2)
 
